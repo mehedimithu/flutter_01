@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:testproject/screens/login_signup_page.dart';
+import 'package:testproject/screens/wrapper.dart';
+import 'package:testproject/services/auth.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Registration With Firebase',
       debugShowCheckedModeBanner: false,
-      home: LoginSignupPage(),
+      home: Home(),
     );
   }
 }
@@ -36,7 +38,9 @@ class Home extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.done) {
             return Scaffold(
               body: Center(
-                child: Text('Success!'),
+                child: Wrapper(
+                  auth: Auth(),
+                ),
               ),
             );
           }

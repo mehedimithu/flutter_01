@@ -1,7 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:testproject/screens/homepage.dart';
+import 'package:testproject/services/auth.dart';
 
 class LoginSignupPage extends StatefulWidget {
-  const LoginSignupPage({Key? key}) : super(key: key);
+  LoginSignupPage({required this.auth, required this.onSignedIn});
+
+  final BaseAuth auth;
+  final VoidCallback onSignedIn;
 
   @override
   _LoginSignupPageState createState() => _LoginSignupPageState();
@@ -28,11 +34,22 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   void _validateAndSubmit() async {
     if (_validateAndSave()) {
       if (_formMode == FormMode.LOGIN) {
-        //Log the user in
-        print("Logged in user");
       } else {
-        //create a new user
-        print("Signup new user");
+        //create a new account
+        try {
+          UserCredential userCredential = await FirebaseAuth.instance
+              .createUserWithEmailAndPassword(
+                  email: "barry.allen@example.com",
+                  password: "SuperSecretPassword!");
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'weak-password') {
+            print('The password provided is too weak.');
+          } else if (e.code == 'email-already-in-use') {
+            print('The account already exists for that email.');
+          }
+        } catch (e) {
+          print(e);
+        }
       }
     }
   }
