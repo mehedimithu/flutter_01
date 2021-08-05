@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:testproject/services/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePage extends StatelessWidget {
   HomePage(
@@ -19,9 +20,48 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         title: Text('Home'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.logout))
+        ],
       ),
       body: Center(
         child: Text('Welcome Home!'),
+      ),
+    );
+  }
+
+//  _signOut() async {
+//     try {
+
+//       await auth.signOut();
+//       onSignedOut();
+//     } catch (e) {
+//       print(e);
+//     }
+//   }
+
+  void _openSettings() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Settings'),
+            ),
+            body: Column(
+              children: [
+                RaisedButton(onPressed: () {
+                  _signOut();
+                  Navigator.pop(context);
+                })
+              ],
+            ),
+          );
+        },
       ),
     );
   }
