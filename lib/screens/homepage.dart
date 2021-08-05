@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:testproject/services/auth.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePage extends StatelessWidget {
   HomePage(
@@ -44,25 +43,25 @@ class HomePage extends StatelessWidget {
 //     }
 //   }
 
-  void _openSettings() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Settings'),
-            ),
-            body: Column(
-              children: [
-                RaisedButton(onPressed: () {
-                  _signOut();
-                  Navigator.pop(context);
-                })
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
+  // void _openSettings() {
+  //   Navigator.of(context).push(
+  //     MaterialPageRoute(
+  //       builder: (BuildContext context) {
+  //         return Scaffold(
+  //           appBar: AppBar(
+  //             title: Text('Settings'),
+  //           ),
+  //           body: Column(
+  //             children: [
+  //               RaisedButton(onPressed: () {
+  //                 _signOut();
+  //                 Navigator.pop(context);
+  //               })
+  //             ],
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 }

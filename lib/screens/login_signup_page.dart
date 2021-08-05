@@ -33,23 +33,54 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
 
   void _validateAndSubmit() async {
     if (_validateAndSave()) {
+      String userId = "";
       if (_formMode == FormMode.LOGIN) {
+        try {
+          UserCredential userCredential =
+              await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: _email,
+            password: _password,
+          );
+          userId = userCredential.user!.uid;
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'user-not-found') {
+            _showErrorOrSussDialog('Not found', _email + 'can not found');
+            print('No user found for that email.');
+          } else if (e.code == 'wrong-password') {
+            _showErrorOrSussDialog('Error!', _email + 'is incorrect');
+            print('Wrong password provided for that user.');
+          }
+        } catch (e) {
+          _showErrorOrSussDialog('Error!', 'e');
+          print(e);
+        }
       } else {
         //create a new account
         try {
-          UserCredential userCredential = await FirebaseAuth.instance
-              .createUserWithEmailAndPassword(
-                  email: "barry.allen@example.com",
-                  password: "SuperSecretPassword!");
+          UserCredential userCredential =
+              await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: _email,
+            password: _password,
+          );
+          _showErrorOrSussDialog(
+              'Success!', 'Please login with corrent username and password');
+          userId = userCredential.user!.uid;
         } on FirebaseAuthException catch (e) {
           if (e.code == 'weak-password') {
+            _showErrorOrSussDialog(
+                'Weak password', 'Please use strong password');
             print('The password provided is too weak.');
           } else if (e.code == 'email-already-in-use') {
+            _showErrorOrSussDialog('Error!', 'This email is already used');
             print('The account already exists for that email.');
           }
         } catch (e) {
+          _showErrorOrSussDialog('Error!', 'e');
           print(e);
         }
+      }
+      if (userId.length > 0 && userId != null && _formMode == FormMode.LOGIN) {
+        widget.onSignedIn();
       }
     }
   }
@@ -186,5 +217,26 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         ],
       ),
     );
+  }
+
+  void _showErrorOrSussDialog(String messageTitle, String messageText) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(messageTitle),
+            content: Text(messageText),
+            actions: [
+              FlatButton(
+                  onPressed: () {
+                    if (messageTitle == "Success!") {
+                      _changeFromToLogin();
+                    }
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Dismiss"))
+            ],
+          );
+        });
   }
 }
